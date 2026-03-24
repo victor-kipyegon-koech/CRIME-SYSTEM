@@ -5,7 +5,7 @@ import { logger } from "./middleware/logger";
 import { rateLimiterMiddleware } from "./middleware/rateLimiter";
 
 // Routers
-// import { userRouter } from "./users/user.route";
+import { userRouter } from "./users/user.route";
 // import { authRouter } from "./auth/auth.route";
 // import { eventRouter } from "./events/event.route";
 // import { venueRouter } from "./venues/venue.route";
@@ -56,7 +56,7 @@ app.get("/", (_req, res: Response) => {
 });
 
 // // ✅ Mount routes
-// app.use("/api", userRouter);
+app.use("/api", userRouter);
 // app.use("/api", authRouter);
 // app.use("/api", eventRouter);
 // app.use("/api", venueRouter);

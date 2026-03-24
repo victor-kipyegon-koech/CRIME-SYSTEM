@@ -11,10 +11,7 @@ import {
   boolean,
   decimal,
 } from "drizzle-orm/pg-core";
-
-/* =========================
-   ENUMS
-========================= */
+ 
 
 export const userRoleEnum = pgEnum("userRole", [
   "citizen",
