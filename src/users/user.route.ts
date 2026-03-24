@@ -7,19 +7,24 @@ import {
   updateUser,
 } from "./user.controller";
 
+// Optional: import role-based auth middleware
+// import { adminRoleAuth, officerRoleAuth } from "../middleware/auth";
+
 export const userRouter = Router();
 
-// Get all users
-userRouter.get("/", getUsers);
+// ================== User Routes ==================
 
-// Get user by ID
-userRouter.get("/:id", getUserById);
+// Get all users (admin only in future)
+userRouter.get("/", /* adminRoleAuth, */ getUsers);
 
-// Create a new user
-userRouter.post("/", createUser);
+// Get user by ID (self or admin)
+userRouter.get("/:id", /* adminRoleAuth, */ getUserById);
 
-// Update an existing user
-userRouter.put("/:id", updateUser);
+// Create a new user (registration for citizen or admin)
+userRouter.post("/", /* adminRoleAuth, */ createUser);
 
-// Delete an existing user
-userRouter.delete("/:id", deleteUser);
+// Update an existing user (self, admin, or officer)
+userRouter.put("/:id", /* adminRoleAuth, */ updateUser);
+
+// Delete an existing user (admin only)
+userRouter.delete("/:id", /* adminRoleAuth, */ deleteUser);

@@ -9,26 +9,23 @@ import {
   updateUserServices,
 } from "../users/user.service";
 
-// Helper: remove password before sending response
-const sanitizeUser = <T extends { password?: string }>(user: T) => {
+// Helper: remove sensitive fields before sending response
+const sanitizeUser = <T extends { password?: string; email?: string }>(user: T) => {
   const { password, ...safeUser } = user;
   return safeUser;
 };
 
-// ========== Get All Users ==========
+// ===================== Get All Users =====================
 export const getUsers = async (req: Request, res: Response): Promise<void> => {
   try {
     const allUsers = await getUsersServices();
 
     if (!allUsers || allUsers.length === 0) {
-      res.status(404).json({
-        success: false,
-        message: "No users found",
-      });
+      res.status(404).json({ success: false, message: "No users found" });
       return;
     }
 
-    const safeUsers = allUsers.map((user) => sanitizeUser(user));
+    const safeUsers = allUsers.map(sanitizeUser);
 
     res.status(200).json({
       success: true,
@@ -43,15 +40,11 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-// ========== Get User by ID ==========
+// ===================== Get User by ID =====================
 export const getUserById = async (req: Request, res: Response): Promise<void> => {
   const userId = parseInt(req.params.id as string, 10);
-
   if (isNaN(userId)) {
-    res.status(400).json({
-      success: false,
-      message: "Invalid user ID",
-    });
+    res.status(400).json({ success: false, message: "Invalid user ID" });
     return;
   }
 
@@ -59,10 +52,7 @@ export const getUserById = async (req: Request, res: Response): Promise<void> =>
     const user = await getUserByIdServices(userId);
 
     if (!user) {
-      res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
+      res.status(404).json({ success: false, message: "User not found" });
       return;
     }
 
@@ -79,7 +69,7 @@ export const getUserById = async (req: Request, res: Response): Promise<void> =>
   }
 };
 
-// ========== Create User ==========
+// ===================== Create User =====================
 export const createUser = async (req: Request, res: Response): Promise<void> => {
   try {
     const validatedData = createUserSchema.parse(req.body);
@@ -110,15 +100,11 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
   }
 };
 
-// ========== Update User ==========
+// ===================== Update User =====================
 export const updateUser = async (req: Request, res: Response): Promise<void> => {
   const userId = parseInt(req.params.id as string, 10);
-
   if (isNaN(userId)) {
-    res.status(400).json({
-      success: false,
-      message: "Invalid user ID",
-    });
+    res.status(400).json({ success: false, message: "Invalid user ID" });
     return;
   }
 
@@ -127,10 +113,7 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
     const updatedUser = await updateUserServices(userId, validatedData);
 
     if (!updatedUser) {
-      res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
+      res.status(404).json({ success: false, message: "User not found" });
       return;
     }
 
@@ -159,15 +142,11 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
   }
 };
 
-// ========== Delete User ==========
+// ===================== Delete User =====================
 export const deleteUser = async (req: Request, res: Response): Promise<void> => {
   const userId = parseInt(req.params.id as string, 10);
-
   if (isNaN(userId)) {
-    res.status(400).json({
-      success: false,
-      message: "Invalid user ID",
-    });
+    res.status(400).json({ success: false, message: "Invalid user ID" });
     return;
   }
 

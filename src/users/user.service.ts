@@ -3,8 +3,12 @@ import db from "../drizzle/db";
 import { TUserInsert, TUserSelect, userTable } from "../drizzle/schema";
 
 // ========== Get all users ==========
-export const getUsersServices = async (): Promise<TUserSelect[]> => {
+export const getUsersServices = async (): Promise<TUserSelect[] | null> => {
   return await db.query.userTable.findMany({
+    with: {
+      submittedReports: true, // reports submitted by the user
+      assignedReports: true,  // reports assigned to this user (officer/admin)
+    },
     orderBy: [desc(userTable.userId)],
   });
 };
@@ -15,6 +19,10 @@ export const getUserByIdServices = async (
 ): Promise<TUserSelect | undefined> => {
   return await db.query.userTable.findFirst({
     where: eq(userTable.userId, userId),
+    with: {
+      submittedReports: true,
+      assignedReports: true,
+    },
   });
 };
 
@@ -22,51 +30,43 @@ export const getUserByIdServices = async (
 export const createUserServices = async (
   user: TUserInsert
 ): Promise<TUserSelect> => {
-  const createdUsers = await db.insert(userTable).values(user).returning();
-  return createdUsers[0];
+  const [createdUser] = await db
+    .insert(userTable)
+    .values(user)
+    .returning();
+
+  return createdUser;
 };
 
 // ========== Update an existing user ==========
 export const updateUserServices = async (
   userId: number,
   user: Partial<TUserInsert>
-): Promise<TUserSelect | null> => {
-  const existingUser = await db.query.userTable.findFirst({
+): Promise<TUserSelect | undefined> => {
+  await db.update(userTable).set(user).where(eq(userTable.userId, userId));
+
+  const updatedUser = await db.query.userTable.findFirst({
     where: eq(userTable.userId, userId),
+    with: {
+      submittedReports: true,
+      assignedReports: true,
+    },
   });
 
-  if (!existingUser) {
-    return null;
-  }
-
-  const updatedUsers = await db
-    .update(userTable)
-    .set({
-      ...user,
-      updatedAt: new Date(),
-    })
-    .where(eq(userTable.userId, userId))
-    .returning();
-
-  return updatedUsers[0] ?? null;
+  return updatedUser || undefined;
 };
 
-// ========== Delete an existing user ==========
+// ========== Delete a user ==========
 export const deleteUserServices = async (
   userId: number
-): Promise<TUserSelect | null> => {
-  const existingUser = await db.query.userTable.findFirst({
+): Promise<TUserSelect | undefined> => {
+  const userToDelete = await db.query.userTable.findFirst({
     where: eq(userTable.userId, userId),
   });
 
-  if (!existingUser) {
-    return null;
-  }
+  if (!userToDelete) return undefined;
 
-  const deletedUsers = await db
-    .delete(userTable)
-    .where(eq(userTable.userId, userId))
-    .returning();
+  await db.delete(userTable).where(eq(userTable.userId, userId));
 
-  return deletedUsers[0] ?? null;
+  return userToDelete;
 };
