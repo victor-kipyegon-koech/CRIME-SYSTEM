@@ -1,0 +1,268 @@
+//default route
+ 
+###
+GET http://localhost:5000/
+
+//users
+
+//get all users
+###
+GET http://localhost:5000/api/users/
+
+//create  users 
+###
+POST http://localhost:5000/api/
+content-type: application/json
+
+{
+  "firstName": "VICTOR",
+  "lastName":"MOMMII",
+  "email": "ovin@gmail.com",
+  "contactphone":"011239577",
+  "address":"5000",
+  "password": "377474",
+  "userType":"member",
+  
+}
+
+//Get user bY id 
+###
+ GET http://localhost:5000/api/users/1
+
+//update users
+
+###
+PUT  http://localhost:5000/api/users/1
+content-type: application/json
+ 
+{
+  "firstName": "olesos",
+  "lastName":"omiii",
+  "email": "olesos@gmail.com",
+  "contactphone":"0712015333",
+  "address":"5000",
+  "password": "12345",
+  "userType":"admin"
+}
+//register user
+###
+POST http://localhost:5000/api/auth/register
+content-type: application/json
+
+{
+  "firstName": "victor",
+  "lastName":"koech",
+  "email": "victorkipyegon778@gmail.com",
+  "password": "password3",
+  "userType":"member"
+}
+//user login
+###
+POST http://localhost:5000/api/auth/login
+content-type: application/json
+
+{
+  "email": "victorkipyegon778@gmail.com",
+  "password": "password3" 
+}
+
+
+
+//delete user 3
+###
+DELETE  http://localhost:5000/api/user
+  
+ 
+//venues
+
+//get all venues 
+###
+GET http://localhost:5000/api/venues/
+
+//create venues
+###
+POST http://localhost:5000/api/venues/
+content-type: application/json
+ 
+ {
+ "name": "mandela",
+  "address": "New Max-Forwards: , mombasa",
+  "capacity": 1230
+}
+
+//get venues by id
+
+###
+ GET http://localhost:5000/api/venues/1
+
+
+//update venues
+###
+ PUT http://localhost:5000/api/venues/1
+Content-Type: application/json
+
+{
+  "name": "Updated Convention Center",
+  "address": "New Street, Nairobi",
+  "capacity": 2000
+}
+
+//delete venues
+###
+DELETE  http://localhost:5000/api/venues/2
+
+
+//events
+
+//GET events 
+###
+GET http://localhost:5000/api/events/
+
+//create a new event
+###
+POST http://localhost:5000/api/events/
+content-type: application/json
+ 
+ {
+  "title": "  comedy",
+  "description": "modern comedy songs perfomance .",
+  "venueId": 8,
+  "category": "comedy live",
+  "date": "2025-07-23",
+  "time": "2:00",
+  "ticketPrice": 1600.00,
+  "ticketsTotal": 35
+}
+
+//get events by id
+###
+GET http://localhost:5000/api/events/3
+
+//update events
+###
+PUT http://localhost:5000/api/events/3
+Content-Type: application/json
+
+{
+  "title": "music and dance ",
+  "description": "The event will be held place in the main hall.",
+  "venueId": 4,
+  "category": "Entertainment",
+  "date": "2025-08-11",
+  "time": "19:30",
+  "ticketPrice": 1200.00,
+  "ticketsTotal": 255,
+  "ticketsSold": 30
+}
+
+//delete events
+###
+DELETE  http://localhost:5000/api/events/2
+
+// bookings 
+
+//get bookimgs
+
+###
+GET   http://localhost:5000/api/bookings
+
+//create bookings
+###
+POST http://localhost:5000/api/bookings
+Content-Type: application/json
+
+{
+  "userId": 48,
+  "eventId": 53,
+  "quantity": 1,
+  "totalAmount": "1050.00", 
+  "status":"confirmed"
+}
+
+//get bookings by id 
+###
+GET http://localhost:5000/api/bookings/4
+
+//update bookings
+###
+PUT http://localhost:5000/api/bookings/2
+Content-Type: application/json
+
+ {
+  "quantity": 4,
+  "totalAmount": "7500.00",
+  "status": "completed"
+}
+//delete bookings
+###
+DELETE  http://localhost:5000/api/bookings/4
+
+//PAYMENTS
+
+//get all payments
+###
+GET   http://localhost:5000/api/payment/
+
+
+//create payments
+
+###
+POST http://localhost:5000/api/payment/
+Content-Type: application/json
+
+{
+  "bookingId": 33,
+  "amount": "1000.00",
+  "paymentMethod": "mpesa",
+  "transactionId": "CONFIRM123456789",
+  "paymentStatus": "failed"
+}
+//get payments by id
+###
+GET http://localhost:5000/api/payments/3
+
+//create payments
+###
+PUT http://localhost:5000/api/payments/3
+Content-Type: application/json
+
+{
+  "bookingId": 1,            
+  "amount": "7500.00",
+  "paymentMethod": "Visa",
+  "transactionId": "VISA987654321",
+  "paymentStatus": "completed"
+}
+
+//DELETE PAYMENTS
+###
+DELETE  http://localhost:5000/api/payments/3
+
+//SUPPORTS TICKETS
+
+// get support tickets
+###
+GET http://localhost:5000/api/supports/
+
+//create supports tickets 
+
+###
+POST http://localhost:5000/api/supports/
+Content-Type: application/json
+  
+  {
+  "userId": 21,
+  "subject": "just a week",
+  "message": " Please wait a while kindly.",
+  "status": " pending" 
+}
+
+//Get sugpport tickets by id
+###
+GET http://localhost:5000/api/supports/13
+
+
+
+
+
+

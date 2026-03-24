@@ -20,7 +20,6 @@ const app: Application = express();
 //  Allowed frontend origins (no trailing slash!)
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://eventticketings.netlify.app"
 ];
 
 //  Optional: log incoming origin for debugging
@@ -53,7 +52,7 @@ app.use(rateLimiterMiddleware);
 
 // ✅ Test route
 app.get("/", (_req, res: Response) => {
-  res.send("✅ Welcome to Event Ticketing and Venue Booking API");
+  res.send("✅ Welcome to Chrime Reporting  and management system");
 });
 
 // // ✅ Mount routes
