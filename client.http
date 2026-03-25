@@ -7,22 +7,23 @@ GET http://localhost:5000/
 
 //get all users
 ###
-GET http://localhost:5000/api/users/
+GET http://localhost:5000/api/users
 
 //create  users 
 ###
-POST http://localhost:5000/api/
+POST http://localhost:5000/api/users
 content-type: application/json
 
-{
-  "firstName": "VICTOR",
-  "lastName":"MOMMII",
-  "email": "ovin@gmail.com",
-  "contactphone":"011239577",
-  "address":"5000",
-  "password": "377474",
-  "userType":"member",
-  
+ {
+  "firstName": "Victor",
+  "lastName": "Koech",
+  "email": "victor@example.com",
+  "password": "securePassword123",
+  "contactPhone": "0712345678",
+  "address": "Nairobi, Kenya",
+  "nationalId": "12345678",
+  "userRole": "admin",
+  "isActive": true
 }
 
 //Get user bY id 
@@ -32,17 +33,19 @@ content-type: application/json
 //update users
 
 ###
-PUT  http://localhost:5000/api/users/1
+PUT  http://localhost:5000/api/users/
 content-type: application/json
  
-{
-  "firstName": "olesos",
-  "lastName":"omiii",
-  "email": "olesos@gmail.com",
-  "contactphone":"0712015333",
-  "address":"5000",
-  "password": "12345",
-  "userType":"admin"
+ {
+  "firstName": "Victor",
+  "lastName": "Koech",
+  "email": "victor@example.com",
+  "password": "securePassword123",
+  "contactPhone": "0712345678",
+  "address": "Nairobi, Kenya",
+  "nationalId": "12345678",
+  "userRole": "admin",
+  "isActive": true
 }
 //register user
 ###

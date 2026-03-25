@@ -1,19 +1,7 @@
  import { relations } from "drizzle-orm";
-import {
-  pgTable,
-  serial,
-  varchar,
-  text,
-  integer,
-  timestamp,
-  pgEnum,
-  boolean,
-  decimal,
-} from "drizzle-orm/pg-core";
+import {pgTable,serial,varchar,text,integer,timestamp,pgEnum,boolean,decimal} from "drizzle-orm/pg-core";
 
-/* =========================
-   ENUMS
-========================= */
+
 export const userRoleEnum = pgEnum("userRole", ["citizen", "officer", "admin", "disabled"]);
 
 export const reportStatusEnum = pgEnum("reportStatus", [
@@ -36,10 +24,6 @@ export const notificationTypeEnum = pgEnum("notificationType", [
   "report_submitted",
   "general",
 ]);
-
-/* =========================
-   USERS
-========================= */
 export const userTable = pgTable("userTable", {
   userId: serial("userId").primaryKey(),
   firstName: varchar("firstName", { length: 100 }).notNull(),
@@ -55,9 +39,7 @@ export const userTable = pgTable("userTable", {
   updatedAt: timestamp("updatedAt").defaultNow(),
 });
 
-/* =========================
-   CRIME CATEGORIES
-========================= */
+ 
 export const crimeCategoryTable = pgTable("crimeCategoryTable", {
   categoryId: serial("categoryId").primaryKey(),
   name: varchar("name", { length: 150 }).notNull().unique(),
@@ -65,9 +47,6 @@ export const crimeCategoryTable = pgTable("crimeCategoryTable", {
   createdAt: timestamp("createdAt").defaultNow(),
 });
 
-/* =========================
-   OFFICER PROFILE
-========================= */
 export const officerProfileTable = pgTable("officerProfileTable", {
   officerProfileId: serial("officerProfileId").primaryKey(),
   userId: integer("userId").notNull().references(() => userTable.userId, { onDelete: "cascade" }),
@@ -79,9 +58,7 @@ export const officerProfileTable = pgTable("officerProfileTable", {
   updatedAt: timestamp("updatedAt").defaultNow(),
 });
 
-/* =========================
-   CRIME REPORTS
-========================= */
+ 
 export const crimeReportTable = pgTable("crimeReportTable", {
   reportId: serial("reportId").primaryKey(),
   reporterId: integer("reporterId").references(() => userTable.userId, { onDelete: "set null" }),
@@ -107,9 +84,7 @@ export const crimeReportTable = pgTable("crimeReportTable", {
   updatedAt: timestamp("updatedAt").defaultNow(),
 });
 
-/* =========================
-   EVIDENCE
-========================= */
+ 
 export const evidenceTable = pgTable("evidenceTable", {
   evidenceId: serial("evidenceId").primaryKey(),
   reportId: integer("reportId").notNull().references(() => crimeReportTable.reportId, { onDelete: "cascade" }),
@@ -120,9 +95,7 @@ export const evidenceTable = pgTable("evidenceTable", {
   createdAt: timestamp("createdAt").defaultNow(),
 });
 
-/* =========================
-   CASE ASSIGNMENTS
-========================= */
+ 
 export const caseAssignmentTable = pgTable("caseAssignmentTable", {
   assignmentId: serial("assignmentId").primaryKey(),
   reportId: integer("reportId").notNull().references(() => crimeReportTable.reportId, { onDelete: "cascade" }),
@@ -132,9 +105,7 @@ export const caseAssignmentTable = pgTable("caseAssignmentTable", {
   assignedAt: timestamp("assignedAt").defaultNow(),
 });
 
-/* =========================
-   REPORT UPDATES
-========================= */
+ 
 export const reportUpdateTable = pgTable("reportUpdateTable", {
   updateId: serial("updateId").primaryKey(),
   reportId: integer("reportId").notNull().references(() => crimeReportTable.reportId, { onDelete: "cascade" }),
@@ -146,9 +117,8 @@ export const reportUpdateTable = pgTable("reportUpdateTable", {
   createdAt: timestamp("createdAt").defaultNow(),
 });
 
-/* =========================
-   NOTIFICATIONS
-========================= */
+
+ 
 export const notificationTable = pgTable("notificationTable", {
   notificationId: serial("notificationId").primaryKey(),
   userId: integer("userId").notNull().references(() => userTable.userId, { onDelete: "cascade" }),
@@ -160,9 +130,7 @@ export const notificationTable = pgTable("notificationTable", {
   createdAt: timestamp("createdAt").defaultNow(),
 });
 
-/* =========================
-   RELATIONS
-========================= */
+ 
 export const userRelations = relations(userTable, ({ many, one }) => ({
   submittedReports: many(crimeReportTable),
   assignedReports: many(crimeReportTable),
@@ -218,9 +186,7 @@ export const notificationRelations = relations(notificationTable, ({ one }) => (
   report: one(crimeReportTable, { fields: [notificationTable.reportId], references: [crimeReportTable.reportId] }),
 }));
 
-/* =========================
-   TYPES
-========================= */
+ //types
 export type TUserInsert = typeof userTable.$inferInsert;
 export type TUserSelect = typeof userTable.$inferSelect;
 
