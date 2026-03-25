@@ -11,217 +11,142 @@ import {
 } from "./schema";
 
 async function seed() {
-  console.log("✅ Crime Reporting System seeding started...");
+  console.log("🌱 Seeding started...");
 
   /* =========================
      1. USERS
   ========================= */
-  await db.insert(userTable).values([
-    {
-      userId: 1,
-      firstName: "Alice",
-      lastName: "Johnson",
-      email: "alice@example.com",
-      password: "hashed-password-1",
-      contactPhone: "0712345678",
-      address: "Nairobi, Kenya",
-      nationalId: "12345678",
-      userRole: "admin",
-      isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      userId: 2,
-      firstName: "Brian",
-      lastName: "Kiptoo",
-      email: "brian@example.com",
-      password: "hashed-password-2",
-      contactPhone: "0798765432",
-      address: "Eldoret, Kenya",
-      nationalId: "23456789",
-      userRole: "officer",
-      isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      userId: 3,
-      firstName: "Cynthia",
-      lastName: "Achieng",
-      email: "cynthia@example.com",
-      password: "hashed-password-3",
-      contactPhone: "0700111222",
-      address: "Kisumu, Kenya",
-      nationalId: "34567890",
-      userRole: "citizen",
-      isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-  ]);
+  const users = await db
+    .insert(userTable)
+    .values([
+      {
+        firstName: "Alice",
+        lastName: "Admin",
+        email: "admin@example.com",
+        password: "hashed-password",
+        userRole: "admin",
+      },
+      {
+        firstName: "Brian",
+        lastName: "Officer",
+        email: "officer@example.com",
+        password: "hashed-password",
+        userRole: "officer",
+      },
+      {
+        firstName: "Cynthia",
+        lastName: "Citizen",
+        email: "citizen@example.com",
+        password: "hashed-password",
+        userRole: "citizen",
+      },
+    ])
+    .returning();
+
+  const admin = users.find((u) => u.userRole === "admin")!;
+  const officer = users.find((u) => u.userRole === "officer")!;
+  const citizen = users.find((u) => u.userRole === "citizen")!;
 
   /* =========================
      2. CRIME CATEGORIES
   ========================= */
-  await db.insert(crimeCategoryTable).values([
-    {
-      categoryId: 1,
-      name: "Theft",
-      description: "Stealing of property or belongings",
-      createdAt: new Date(),
-    },
-    {
-      categoryId: 2,
-      name: "Assault",
-      description: "Physical attack or threat of violence",
-      createdAt: new Date(),
-    },
-    {
-      categoryId: 3,
-      name: "Fraud",
-      description: "Deception for financial or personal gain",
-      createdAt: new Date(),
-    },
-    {
-      categoryId: 4,
-      name: "Domestic Violence",
-      description: "Violence or abuse within the home",
-      createdAt: new Date(),
-    },
-  ]);
+  const categories = await db
+    .insert(crimeCategoryTable)
+    .values([
+      { name: "Theft", description: "Stealing property" },
+      { name: "Fraud", description: "Financial deception" },
+      { name: "Assault", description: "Physical attack" },
+    ])
+    .returning();
+
+  const theftCategory = categories[0];
+  const fraudCategory = categories[1];
 
   /* =========================
      3. OFFICER PROFILE
   ========================= */
-  await db.insert(officerProfileTable).values([
-    {
-      officerProfileId: 1,
-      userId: 2,
-      badgeNumber: "KP10234",
-      rank: "Inspector",
-      stationName: "Central Police Station",
-      stationLocation: "Nairobi",
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-  ]);
+  await db.insert(officerProfileTable).values({
+    userId: officer.userId,
+    badgeNumber: "KP10234",
+    rank: "Inspector",
+    stationName: "Central Police Station",
+    stationLocation: "Nairobi",
+  });
 
   /* =========================
      4. CRIME REPORTS
   ========================= */
-  await db.insert(crimeReportTable).values([
-    {
-      reportId: 1,
-      reporterId: 3,
-      categoryId: 1,
-      title: "Phone stolen at bus stage",
-      description: "My phone was stolen while I was boarding a matatu at the bus stage.",
-      incidentDate: new Date("2026-03-20T18:30:00"),
-      reportedAt: new Date(),
-      locationText: "Kisumu Bus Stage",
-      latitude: " -0.0917",
-      longitude: "34.7680",
-      suspectDescription: "Male adult wearing a black hoodie",
-      witnessInfo: "Two nearby vendors may have seen the incident",
-      status: "assigned",
-      priority: "high",
-      isAnonymous: false,
-      isVerified: true,
-      assignedOfficerId: 2,
-      resolutionNotes: null,
-      resolvedAt: null,
-      closedAt: null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      reportId: 2,
-      reporterId: 3,
-      categoryId: 3,
-      title: "Mobile money fraud",
-      description: "I received a fake transaction confirmation and lost money.",
-      incidentDate: new Date("2026-03-18T14:00:00"),
-      reportedAt: new Date(),
-      locationText: "Kisumu CBD",
-      latitude: "-0.1022",
-      longitude: "34.7617",
-      suspectDescription: "Unknown caller pretending to be customer care",
-      witnessInfo: null,
-      status: "pending",
-      priority: "medium",
-      isAnonymous: false,
-      isVerified: false,
-      assignedOfficerId: null,
-      resolutionNotes: null,
-      resolvedAt: null,
-      closedAt: null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-  ]);
+  const reports = await db
+    .insert(crimeReportTable)
+    .values([
+      {
+        reporterId: citizen.userId,
+        categoryId: theftCategory.categoryId,
+        title: "Phone stolen",
+        description: "My phone was stolen at the bus stage",
+        locationText: "Kisumu Bus Stage",
+        latitude: "-0.0917",
+        longitude: "34.7680",
+        status: "assigned",
+        priority: "high",
+        assignedOfficerId: officer.userId,
+      },
+      {
+        reporterId: citizen.userId,
+        categoryId: fraudCategory.categoryId,
+        title: "M-Pesa fraud",
+        description: "Fake SMS led to money loss",
+        locationText: "Kisumu CBD",
+        latitude: "-0.1022",
+        longitude: "34.7617",
+        status: "pending",
+        priority: "medium",
+      },
+    ])
+    .returning();
+
+  const report1 = reports[0];
+  const report2 = reports[1];
 
   /* =========================
      5. EVIDENCE
   ========================= */
   await db.insert(evidenceTable).values([
     {
-      evidenceId: 1,
-      reportId: 1,
-      fileUrl: "https://example.com/uploads/stolen-phone-photo.jpg",
-      fileName: "stolen-phone-photo.jpg",
+      reportId: report1.reportId,
+      fileUrl: "https://example.com/evidence1.jpg",
+      fileName: "evidence1.jpg",
       fileType: "image",
-      uploadedBy: 3,
-      createdAt: new Date(),
-    },
-    {
-      evidenceId: 2,
-      reportId: 2,
-      fileUrl: "https://example.com/uploads/fraud-sms-screenshot.png",
-      fileName: "fraud-sms-screenshot.png",
-      fileType: "image",
-      uploadedBy: 3,
-      createdAt: new Date(),
+      uploadedBy: citizen.userId,
     },
   ]);
 
   /* =========================
-     6. CASE ASSIGNMENTS
+     6. CASE ASSIGNMENT
   ========================= */
-  await db.insert(caseAssignmentTable).values([
-    {
-      assignmentId: 1,
-      reportId: 1,
-      officerId: 2,
-      assignedBy: 1,
-      assignmentNotes: "Investigate theft case and contact witnesses.",
-      assignedAt: new Date(),
-    },
-  ]);
+  await db.insert(caseAssignmentTable).values({
+    reportId: report1.reportId,
+    officerId: officer.userId,
+    assignedBy: admin.userId,
+    assignmentNotes: "Investigate immediately",
+  });
 
   /* =========================
      7. REPORT UPDATES
   ========================= */
   await db.insert(reportUpdateTable).values([
     {
-      updateId: 1,
-      reportId: 1,
-      updatedBy: 1,
+      reportId: report1.reportId,
+      updatedBy: admin.userId,
       oldStatus: "pending",
       newStatus: "assigned",
-      comment: "Case reviewed and assigned to investigating officer.",
-      internalNote: "High priority because theft occurred in a public area.",
-      createdAt: new Date(),
+      comment: "Assigned to officer",
     },
     {
-      updateId: 2,
-      reportId: 2,
-      updatedBy: 1,
-      oldStatus: null,
+      reportId: report2.reportId,
+      updatedBy: admin.userId,
       newStatus: "pending",
-      comment: "Report received and awaiting review.",
-      internalNote: "Need to verify mobile transaction records.",
-      createdAt: new Date(),
+      comment: "Awaiting review",
     },
   ]);
 
@@ -230,32 +155,26 @@ async function seed() {
   ========================= */
   await db.insert(notificationTable).values([
     {
-      notificationId: 1,
-      userId: 3,
-      reportId: 1,
+      userId: citizen.userId,
+      reportId: report1.reportId,
       type: "assignment",
       title: "Case Assigned",
-      message: "Your report has been assigned to an officer for investigation.",
-      isRead: false,
-      createdAt: new Date(),
+      message: "Your case has been assigned",
     },
     {
-      notificationId: 2,
-      userId: 3,
-      reportId: 2,
+      userId: citizen.userId,
+      reportId: report2.reportId,
       type: "report_submitted",
       title: "Report Submitted",
-      message: "Your crime report was submitted successfully and is awaiting review.",
-      isRead: false,
-      createdAt: new Date(),
+      message: "Your report is under review",
     },
   ]);
 
-  console.log("✅ Crime Reporting System seeding complete!");
+  console.log("✅ Seeding completed successfully!");
   process.exit(0);
 }
 
-seed().catch((e) => {
-  console.error("❌ Seeding failed:", e);
+seed().catch((err) => {
+  console.error("❌ Seeding failed:", err);
   process.exit(1);
 });
